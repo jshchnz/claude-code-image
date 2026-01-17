@@ -1,52 +1,76 @@
 # claude-code-image
 
-A Claude Code plugin for AI image generation and editing using GPT Image (OpenAI) or Nanobanana (Google Gemini).
+Generate and edit images with AI using natural language. Just describe what you want!
 
-## Features
+## Quick Start
 
-- **Text-to-image generation** - Create images from text prompts
-- **Image editing** - Edit existing images with AI (inpainting, style transfer, modifications)
-- **Multiple services** - Choose between OpenAI GPT Image or Google Gemini (Nanobanana)
-- **Auto-transparency** - Automatically enables transparent backgrounds for stickers, icons, and sprites
-- **Configurable defaults** - Save your preferred settings for faster generation
-- **Generation history** - Track all your generated images
+After installing, simply ask Claude to create images:
 
-## Installation
+> "Create an image of a serene Japanese garden at sunset"
 
-1. Clone this repository:
+> "Generate a logo for a tech startup called 'NovaSpark'"
+
+> "Make me a cute cartoon fox sticker"
+
+Claude will handle the rest - selecting the right service, generating the image, and saving it for you.
+
+## Examples
+
+### Creating Images
+
+**Landscapes & Scenes:**
+> "Create an image of a cyberpunk city at night with neon lights and flying cars"
+
+**Logos & Icons:**
+> "Generate a minimalist logo for a coffee shop called 'Bean There'"
+
+**Characters & Art:**
+> "Draw a friendly robot mascot in a cartoon style"
+
+**Stickers (auto-transparent):**
+> "Make a kawaii cat sticker with sparkles"
+
+### Editing Images
+
+**Adding Elements:**
+> "Here's my photo [attach image]. Add sunglasses to me"
+
+**Style Transfer:**
+> "Take this landscape photo and make it look like a Van Gogh painting"
+
+**Modifications:**
+> "Edit this image and change the background to a beach"
+
+## Slash Commands (Advanced)
+
+For explicit control, you can also use slash commands:
+
+| Command | Description |
+|---------|-------------|
+| `/claude-code-image:generate <prompt>` | Generate with specific prompt |
+| `/claude-code-image:edit` | Interactive image editing |
+| `/claude-code-image:configure` | Set up API keys and defaults |
+| `/claude-code-image:models` | View available AI models |
+| `/claude-code-image:history` | See recent generations |
+| `/claude-code-image:status` | Check configuration |
+
+## Setup
+
+1. **Install the plugin:**
    ```bash
    git clone https://github.com/jshchnz/claude-code-image.git
    ```
 
-2. Add the plugin to Claude Code:
+2. **Add to Claude Code:**
    ```bash
    claude --plugin-dir /path/to/claude-code-image
    ```
 
-   Or add to your Claude Code settings to load automatically.
+3. **Configure your API key:**
+   > "Set up image generation" or `/claude-code-image:configure`
 
-## Quick Start
-
-1. Configure your API keys:
-   ```
-   /claude-code-image:configure
-   ```
-
-2. Generate your first image:
-   ```
-   /claude-code-image:generate a serene mountain landscape at sunset
-   ```
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `/claude-code-image:generate <prompt>` | Generate an image from a text prompt |
-| `/claude-code-image:edit` | Edit an existing image |
-| `/claude-code-image:configure` | Set up API keys and preferences |
-| `/claude-code-image:models` | List available models and their specs |
-| `/claude-code-image:history` | View recently generated images |
-| `/claude-code-image:status` | Check API key status and current config |
+4. **Start creating:**
+   > "Generate an image of a mountain lake at dawn"
 
 ## Available Models
 
@@ -85,7 +109,7 @@ Get your API keys:
 
 ### User Preferences
 
-Run `/claude-code-image:configure` to set up:
+Run `/claude-code-image:configure` or say "configure image generation" to set up:
 - Default service (GPT Image or Nanobanana)
 - Default model for each service
 - Output directory
@@ -117,33 +141,6 @@ The plugin automatically enables transparent backgrounds when your prompt contai
 - sticker, icon, sprite, logo
 - cutout, transparent
 - asset, emoji
-
-## Examples
-
-### Basic Generation
-```
-/claude-code-image:generate a cyberpunk city at night with neon lights
-```
-
-### Sticker (auto-transparent)
-```
-/claude-code-image:generate a kawaii cat sticker with sparkles
-```
-
-### Image Editing
-```
-/claude-code-image:edit
-> Image: /path/to/photo.jpg
-> Edit: Add sunglasses to the person
-```
-
-### Inpainting with Mask
-```
-/claude-code-image:edit
-> Image: /path/to/landscape.jpg
-> Edit: Replace the sky with a dramatic sunset
-> Mask: /path/to/sky-mask.png
-```
 
 ## File Locations
 

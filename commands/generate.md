@@ -1,6 +1,21 @@
-# Generate Image
+# Image Generation
 
-Generate images from text prompts using AI image generation services.
+## When to Use This Command
+
+**Use this when the user wants to create a new image.** This includes natural language requests like:
+
+- "Create an image of a sunset over mountains"
+- "Generate a cyberpunk cityscape"
+- "Make me a logo for my bakery"
+- "Draw a cartoon cat"
+- "I need an illustration of a rocket ship"
+- "Design an icon for my app"
+- "Can you make a picture of..."
+- "Visualize what a futuristic car might look like"
+
+**Also triggered by:** `/claude-code-image:generate <prompt>`
+
+---
 
 ## Usage
 

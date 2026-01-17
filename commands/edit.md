@@ -1,6 +1,21 @@
-# Edit Image
+# Image Editing
 
-Edit existing images using AI image generation services. Supports reference images, inpainting with masks, and style transfer.
+## When to Use This Command
+
+**Use this when the user wants to modify an existing image.** This includes natural language requests like:
+
+- "Edit this image and add sunglasses"
+- "Remove the background from this photo"
+- "Change the sky to a sunset"
+- "Make this photo look like a painting"
+- "Add a hat to the person in this image"
+- "Can you modify this picture to..."
+- "Apply anime style to this image"
+- "Transform this into..."
+
+**Also triggered by:** `/claude-code-image:edit`
+
+---
 
 ## Usage
 

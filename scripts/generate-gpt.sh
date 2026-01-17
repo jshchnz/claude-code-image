@@ -4,12 +4,12 @@
 # Usage: generate-gpt.sh <model> <prompt> <size> <quality> <format> <background> <output_path>
 #
 # Arguments:
-#   model       - gpt-image-1.5, gpt-image-1, or gpt-image-1-mini
+#   model       - dall-e-3, dall-e-2, gpt-image-1, or gpt-image-1-mini
 #   prompt      - Text prompt for image generation
-#   size        - 1024x1024, 1024x1536, or 1536x1024
-#   quality     - low, medium, high, or auto
-#   format      - png, jpeg, or webp
-#   background  - transparent or opaque
+#   size        - 1024x1024, 1024x1792, or 1792x1024 (dall-e-3)
+#   quality     - standard, hd (dall-e-3) or low, medium, high, auto (gpt-image)
+#   format      - png, jpeg, or webp (gpt-image only, ignored for dall-e)
+#   background  - transparent or opaque (gpt-image only, ignored for dall-e)
 #   output_path - Full path where to save the generated image
 
 set -e
@@ -41,17 +41,50 @@ QUALITY="${QUALITY:-auto}"
 FORMAT="${FORMAT:-png}"
 BACKGROUND="${BACKGROUND:-opaque}"
 
-# Map quality to API values
-case "$QUALITY" in
-    low) API_QUALITY="low" ;;
-    medium) API_QUALITY="medium" ;;
-    high) API_QUALITY="high" ;;
-    auto|*) API_QUALITY="auto" ;;
-esac
+# Build the request JSON based on model type
+if [[ "$MODEL" == dall-e-* ]]; then
+    # DALL-E models use different parameters
+    # Map quality for DALL-E (only dall-e-3 supports quality)
+    if [ "$MODEL" = "dall-e-3" ]; then
+        case "$QUALITY" in
+            hd|high) API_QUALITY="hd" ;;
+            *) API_QUALITY="standard" ;;
+        esac
+        REQUEST_JSON=$(cat <<EOF
+{
+  "model": "$MODEL",
+  "prompt": "$PROMPT",
+  "n": 1,
+  "size": "$SIZE",
+  "quality": "$API_QUALITY",
+  "response_format": "b64_json"
+}
+EOF
+)
+    else
+        # dall-e-2 doesn't support quality
+        REQUEST_JSON=$(cat <<EOF
+{
+  "model": "$MODEL",
+  "prompt": "$PROMPT",
+  "n": 1,
+  "size": "$SIZE",
+  "response_format": "b64_json"
+}
+EOF
+)
+    fi
+else
+    # GPT-Image models (gpt-image-1, etc.) use extended parameters
+    case "$QUALITY" in
+        low) API_QUALITY="low" ;;
+        medium) API_QUALITY="medium" ;;
+        high) API_QUALITY="high" ;;
+        auto|*) API_QUALITY="auto" ;;
+    esac
 
-# Build the request JSON
-if [ "$BACKGROUND" = "transparent" ]; then
-    REQUEST_JSON=$(cat <<EOF
+    if [ "$BACKGROUND" = "transparent" ]; then
+        REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
   "prompt": "$PROMPT",
@@ -64,8 +97,8 @@ if [ "$BACKGROUND" = "transparent" ]; then
 }
 EOF
 )
-else
-    REQUEST_JSON=$(cat <<EOF
+    else
+        REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
   "prompt": "$PROMPT",
@@ -77,6 +110,7 @@ else
 }
 EOF
 )
+    fi
 fi
 
 # Make the API request
@@ -87,13 +121,29 @@ RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/images/generations" \
 
 # Check for errors in response
 if echo "$RESPONSE" | grep -q '"error"'; then
-    ERROR_MSG=$(echo "$RESPONSE" | grep -o '"message":"[^"]*"' | head -1 | cut -d'"' -f4)
+    ERROR_MSG=$(echo "$RESPONSE" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('error', {}).get('message', 'Unknown error'))
+except:
+    print('Failed to parse error')
+" 2>/dev/null)
     echo "Error from OpenAI API: $ERROR_MSG"
     exit 1
 fi
 
-# Extract base64 image data
-IMAGE_DATA=$(echo "$RESPONSE" | grep -o '"b64_json":"[^"]*"' | head -1 | cut -d'"' -f4)
+# Extract base64 image data using Python for reliable JSON parsing
+IMAGE_DATA=$(echo "$RESPONSE" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    images = data.get('data', [])
+    if images and 'b64_json' in images[0]:
+        print(images[0]['b64_json'])
+except Exception as e:
+    pass
+" 2>/dev/null)
 
 if [ -z "$IMAGE_DATA" ]; then
     echo "Error: No image data in response"

@@ -90,13 +90,29 @@ rm -rf "$TEMP_DIR"
 
 # Check for errors in response
 if echo "$RESPONSE" | grep -q '"error"'; then
-    ERROR_MSG=$(echo "$RESPONSE" | grep -o '"message":"[^"]*"' | head -1 | cut -d'"' -f4)
+    ERROR_MSG=$(echo "$RESPONSE" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('error', {}).get('message', 'Unknown error'))
+except:
+    print('Failed to parse error')
+" 2>/dev/null)
     echo "Error from OpenAI API: $ERROR_MSG"
     exit 1
 fi
 
-# Extract base64 image data
-IMAGE_DATA=$(echo "$RESPONSE" | grep -o '"b64_json":"[^"]*"' | head -1 | cut -d'"' -f4)
+# Extract base64 image data using Python for reliable JSON parsing
+IMAGE_DATA=$(echo "$RESPONSE" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    images = data.get('data', [])
+    if images and 'b64_json' in images[0]:
+        print(images[0]['b64_json'])
+except Exception as e:
+    pass
+" 2>/dev/null)
 
 if [ -z "$IMAGE_DATA" ]; then
     echo "Error: No image data in response"
