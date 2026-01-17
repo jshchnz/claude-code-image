@@ -1,0 +1,20 @@
+{
+  "name": "claude-code-image",
+  "description": "Generate and edit images using GPT Image (OpenAI) or Nanobanana (Google Gemini)",
+  "version": "1.0.0",
+  "author": {
+    "name": "jshchnz"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jshchnz/claude-code-image",
+  "homepage": "https://github.com/jshchnz/claude-code-image#readme",
+  "keywords": [
+    "image-generation",
+    "image-editing",
+    "openai",
+    "gemini",
+    "nanobanana",
+    "gpt-image",
+    "ai-art"
+  ]
+}
