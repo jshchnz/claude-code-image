@@ -1,3 +1,7 @@
+---
+description: View recently generated images and their details
+---
+
 # History
 
 View recently generated images and their details.

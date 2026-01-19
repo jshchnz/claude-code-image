@@ -1,3 +1,7 @@
+---
+description: Edit existing images using AI (add elements, style transfer, modifications)
+---
+
 # Image Editing
 
 ## When to Use This Command

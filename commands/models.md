@@ -1,3 +1,7 @@
+---
+description: List available AI image generation models and their specs
+---
+
 # Models
 
 List all available image generation models with their specifications.

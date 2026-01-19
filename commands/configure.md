@@ -1,3 +1,7 @@
+---
+description: Set up API keys and default preferences for image generation
+---
+
 # Configure
 
 Set up API keys and default preferences for the claude-code-image plugin.

@@ -1,3 +1,7 @@
+---
+description: Check API key status and current configuration
+---
+
 # Status
 
 Check the current configuration status and API key availability.

@@ -1,3 +1,8 @@
+---
+description: Generate images from text prompts using AI (OpenAI or Gemini)
+argument-hint: <prompt>
+---
+
 # Image Generation
 
 ## When to Use This Command
@@ -26,6 +31,90 @@
 ## Instructions
 
 When the user invokes this command with a prompt, follow these steps:
+
+### 0. First-Time Setup Check
+
+Check if configuration exists at `~/.claude-code-image/config.json`.
+
+**If config file does NOT exist**, run first-time setup:
+
+Display:
+"**Welcome to claude-code-image!** Let's set up your preferences (one-time only).
+
+**Step 1/3: Choose your preferred service**
+
+Which AI service would you like to use for image generation?
+
+1. **OpenAI (DALL-E 3)** - Best quality, ~$0.04-0.12/image
+2. **Google Gemini** - Fast, free tier (1500/day), then ~$0.0025/image"
+
+After user selects, ask for model preference:
+
+**If OpenAI selected:**
+"**Step 2/3: Choose default model**
+
+1. `dall-e-3` - Best quality (recommended)
+2. `dall-e-2` - Budget-friendly"
+
+**If Gemini selected:**
+"**Step 2/3: Choose default model**
+
+1. `gemini-2.0-flash-exp-image-generation` - Fast, free tier (recommended)"
+
+Then check for API key:
+
+"**Step 3/3: API Key Setup**"
+
+**For OpenAI:**
+Check if `OPENAI_API_KEY` environment variable is set.
+- If set: "API key detected! You're all set."
+- If not set: Guide user to set it up:
+  "No OpenAI API key found. Please set it up:
+  1. Get your key: https://platform.openai.com/api-keys
+  2. Add to your shell config (~/.zshrc or ~/.bashrc):
+     `export OPENAI_API_KEY='your-key-here'`
+  3. Run `source ~/.zshrc` and restart Claude Code"
+
+**For Gemini:**
+Check if `GEMINI_API_KEY` environment variable is set.
+- If set: "API key detected! You're all set."
+- If not set: Guide user to set it up:
+  "No Gemini API key found. Please set it up:
+  1. Get your key: https://aistudio.google.com/apikey
+  2. Add to your shell config (~/.zshrc or ~/.bashrc):
+     `export GEMINI_API_KEY='your-key-here'`
+  3. Run `source ~/.zshrc` and restart Claude Code"
+
+**Save Configuration:**
+
+Create config directory and save preferences:
+```bash
+mkdir -p ~/.claude-code-image
+mkdir -p ~/Pictures/claude-code-image
+```
+
+Write to `~/.claude-code-image/config.json`:
+```json
+{
+  "default_service": "[selected: openai or gemini]",
+  "default_model": {
+    "openai": "[selected openai model]",
+    "gemini": "[selected gemini model]"
+  },
+  "output_directory": "~/Pictures/claude-code-image",
+  "default_size": "square",
+  "default_quality": "auto",
+  "default_format": "png"
+}
+```
+
+Display: "**Setup complete!** Your preferences have been saved. Now let's generate your image..."
+
+Then continue to Step 1.
+
+**If config file EXISTS**, skip this step and proceed directly to Step 1.
+
+---
 
 ### 1. Load User Preferences
 
@@ -94,7 +183,41 @@ If no default service is configured, ask the user:
 - `jpeg`: Smaller file size
 - `webp`: Modern format, good compression
 
-### 6. Check API Key
+### 6. Estimate Cost & Confirm
+
+Before generating, calculate and display the estimated cost based on selected options:
+
+**OpenAI DALL-E 3 Pricing:**
+| Size | Standard | HD |
+|------|----------|-----|
+| 1024x1024 (square) | $0.04 | $0.08 |
+| 1024x1792 (portrait) | $0.08 | $0.12 |
+| 1792x1024 (landscape) | $0.08 | $0.12 |
+
+**OpenAI DALL-E 2 Pricing:**
+- All sizes: ~$0.02
+
+**Google Gemini (Nanobanana) Pricing:**
+- **Free tier**: Up to 1500 images/day at no cost
+- After free tier: ~$0.0025/image
+
+Display a confirmation to the user:
+
+```
+**Estimated Cost:** $X.XX
+
+Summary:
+- Service: [OpenAI/Gemini]
+- Model: [model name]
+- Size: [dimensions]
+- Quality: [quality level]
+
+Proceed with generation?
+```
+
+Wait for user confirmation before proceeding. If user declines, offer to change options or cancel.
+
+### 7. Check API Key
 
 **For GPT Image:** Check if `OPENAI_API_KEY` environment variable is set.
 **For Nanobanana:** Check if `GEMINI_API_KEY` environment variable is set.
@@ -102,7 +225,7 @@ If no default service is configured, ask the user:
 If the required API key is not set, inform the user:
 "API key not configured. Run `/claude-code-image:configure` to set up your API keys."
 
-### 7. Generate the Image
+### 8. Generate the Image
 
 Run the appropriate script based on the selected service:
 
@@ -140,7 +263,7 @@ Where:
 - `<aspect_ratio>`: 1:1, 9:16, or 16:9
 - `<output_path>`: Full path including filename
 
-### 8. Generate Output Filename
+### 9. Generate Output Filename
 
 Use this naming convention:
 ```
@@ -151,7 +274,7 @@ Examples:
 - `gpt_1.5_2026-01-17_143052.png`
 - `nanobanana_flash_2026-01-17_143105.png`
 
-### 9. Save to History
+### 10. Save to History
 
 Append the generation details to `~/.claude-code-image/history.json`:
 ```json
@@ -168,7 +291,7 @@ Append the generation details to `~/.claude-code-image/history.json`:
 }
 ```
 
-### 10. Return Result
+### 11. Return Result
 
 Display to the user:
 - The generated image (read and display it)

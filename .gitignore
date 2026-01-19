@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment and secrets (API keys)
+.env
+.env.local
+.env.*.local
+*.key
+credentials.json
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
