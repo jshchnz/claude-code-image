@@ -9,7 +9,7 @@ List all available image generation models with their specifications.
 ## Usage
 
 ```
-/claude-code-image:models
+/image:models
 ```
 
 ## Instructions
@@ -96,7 +96,7 @@ When the user invokes this command, display the following information:
 
 ---
 
-**Tip:** Run `/claude-code-image:configure` to set your default model preferences."
+**Tip:** Run `/image:configure` to set your default model preferences."
 
 ## Notes
 

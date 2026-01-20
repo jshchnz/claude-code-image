@@ -15,6 +15,14 @@
 
 set -e
 
+# Cleanup function for temp files
+cleanup() {
+    if [ -n "${TEMP_DIR:-}" ] && [ -d "$TEMP_DIR" ]; then
+        rm -rf "$TEMP_DIR"
+    fi
+}
+trap cleanup EXIT INT TERM
+
 MODEL="$1"
 PROMPT="$2"
 IMAGE_BASE64="$3"
@@ -58,13 +66,13 @@ IMAGE_FILE="$TEMP_DIR/image.png"
 # Decode the base64 image to a file
 echo "$IMAGE_BASE64" | base64 -d > "$IMAGE_FILE"
 
-# Build the curl command with multipart form data
+# Build the curl command with multipart form data (with timeouts)
 if [ "$MASK_BASE64" != "none" ] && [ -n "$MASK_BASE64" ]; then
     # With mask
     MASK_FILE="$TEMP_DIR/mask.png"
     echo "$MASK_BASE64" | base64 -d > "$MASK_FILE"
 
-    RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/images/edits" \
+    RESPONSE=$(curl -s --connect-timeout 10 --max-time 120 -X POST "https://api.openai.com/v1/images/edits" \
         -H "Authorization: Bearer $OPENAI_API_KEY" \
         -F "model=$MODEL" \
         -F "image=@$IMAGE_FILE" \
@@ -75,7 +83,7 @@ if [ "$MASK_BASE64" != "none" ] && [ -n "$MASK_BASE64" ]; then
         -F "response_format=b64_json")
 else
     # Without mask
-    RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/images/edits" \
+    RESPONSE=$(curl -s --connect-timeout 10 --max-time 120 -X POST "https://api.openai.com/v1/images/edits" \
         -H "Authorization: Bearer $OPENAI_API_KEY" \
         -F "model=$MODEL" \
         -F "image=@$IMAGE_FILE" \
@@ -85,8 +93,17 @@ else
         -F "response_format=b64_json")
 fi
 
-# Clean up temp files
-rm -rf "$TEMP_DIR"
+# Check for curl errors
+CURL_EXIT=$?
+if [ $CURL_EXIT -ne 0 ]; then
+    case $CURL_EXIT in
+        28) echo "Error: Request timed out" ;;
+        6)  echo "Error: Could not resolve host" ;;
+        7)  echo "Error: Connection refused" ;;
+        *)  echo "Error: Network error (curl exit code: $CURL_EXIT)" ;;
+    esac
+    exit 1
+fi
 
 # Check for errors in response
 if echo "$RESPONSE" | grep -q '"error"'; then

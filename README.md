@@ -47,30 +47,27 @@ For explicit control, you can also use slash commands:
 
 | Command | Description |
 |---------|-------------|
-| `/claude-code-image:generate <prompt>` | Generate with specific prompt |
-| `/claude-code-image:edit` | Interactive image editing |
-| `/claude-code-image:configure` | Set up API keys and defaults |
-| `/claude-code-image:models` | View available AI models |
-| `/claude-code-image:history` | See recent generations |
-| `/claude-code-image:status` | Check configuration |
+| `/image:generate <prompt>` | Generate with specific prompt |
+| `/image:edit` | Interactive image editing |
+| `/image:configure` | Set up API keys and defaults |
+| `/image:models` | View available AI models |
+| `/image:history` | See recent generations |
+| `/image:status` | Check configuration |
 
-## Setup
+## Install
 
-1. **Install the plugin:**
-   ```bash
-   git clone https://github.com/jshchnz/claude-code-image.git
-   ```
+```
+/plugin marketplace add jshchnz/claude-code-image
+/plugin install image@claude-code-image
+```
 
-2. **Add to Claude Code:**
-   ```bash
-   claude --plugin-dir /path/to/claude-code-image
-   ```
+> Requires Claude Code v1.0.33+
 
-3. **Configure your API key:**
-   > "Set up image generation" or `/claude-code-image:configure`
+Then configure your API key:
+> "Set up image generation" or `/image:configure`
 
-4. **Start creating:**
-   > "Generate an image of a mountain lake at dawn"
+Start creating:
+> "Generate an image of a mountain lake at dawn"
 
 ## Available Models
 
@@ -109,7 +106,7 @@ Get your API keys:
 
 ### User Preferences
 
-Run `/claude-code-image:configure` or say "configure image generation" to set up:
+Run `/image:configure` or say "configure image generation" to set up:
 - Default service (GPT Image or Nanobanana)
 - Default model for each service
 - Output directory

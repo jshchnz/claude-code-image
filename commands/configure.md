@@ -9,7 +9,7 @@ Set up API keys and default preferences for the claude-code-image plugin.
 ## Usage
 
 ```
-/claude-code-image:configure
+/image:configure
 ```
 
 ## Instructions
@@ -190,11 +190,11 @@ Display a summary:
 - Quality: [quality]
 - Format: [format]
 
-Run `/claude-code-image:status` to check your configuration at any time."
+Run `/image:status` to check your configuration at any time."
 
 ## Reconfiguration
 
-Users can run `/claude-code-image:configure` again to update any settings. The command will show current values and allow selective updates.
+Users can run `/image:configure` again to update any settings. The command will show current values and allow selective updates.
 
 ## Config File Location
 

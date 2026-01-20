@@ -17,14 +17,14 @@ description: Edit existing images using AI (add elements, style transfer, modifi
 - "Apply anime style to this image"
 - "Transform this into..."
 
-**Also triggered by:** `/claude-code-image:edit`
+**Also triggered by:** `/image:edit`
 
 ---
 
 ## Usage
 
 ```
-/claude-code-image:edit
+/image:edit
 ```
 
 ## Instructions
@@ -183,14 +183,14 @@ Apply artistic styles to the image:
 
 **Simple edit:**
 ```
-/claude-code-image:edit
+/image:edit
 > Image: /Users/me/portrait.jpg
 > Edit: Add sunglasses to the person
 ```
 
 **Inpainting with mask:**
 ```
-/claude-code-image:edit
+/image:edit
 > Image: /Users/me/landscape.jpg
 > Edit: Replace the sky with a dramatic sunset
 > Mask: /Users/me/sky-mask.png
@@ -198,7 +198,7 @@ Apply artistic styles to the image:
 
 **Style transfer:**
 ```
-/claude-code-image:edit
+/image:edit
 > Image: /Users/me/photo.jpg
 > Edit: Transform this into a Studio Ghibli style illustration
 ```

@@ -14,6 +14,17 @@
 
 set -e
 
+# JSON escaping function to prevent injection
+# Uses jq if available, falls back to Python
+escape_json_string() {
+    local input="$1"
+    if command -v jq &>/dev/null; then
+        printf '%s' "$input" | jq -Rs '.[:-1]'
+    else
+        printf '%s' "$input" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])"
+    fi
+}
+
 MODEL="$1"
 PROMPT="$2"
 SIZE="$3"
@@ -41,6 +52,9 @@ QUALITY="${QUALITY:-auto}"
 FORMAT="${FORMAT:-png}"
 BACKGROUND="${BACKGROUND:-opaque}"
 
+# Escape prompt for safe JSON embedding
+ESCAPED_PROMPT=$(escape_json_string "$PROMPT")
+
 # Build the request JSON based on model type
 if [[ "$MODEL" == dall-e-* ]]; then
     # DALL-E models use different parameters
@@ -53,7 +67,7 @@ if [[ "$MODEL" == dall-e-* ]]; then
         REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
-  "prompt": "$PROMPT",
+  "prompt": "$ESCAPED_PROMPT",
   "n": 1,
   "size": "$SIZE",
   "quality": "$API_QUALITY",
@@ -66,7 +80,7 @@ EOF
         REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
-  "prompt": "$PROMPT",
+  "prompt": "$ESCAPED_PROMPT",
   "n": 1,
   "size": "$SIZE",
   "response_format": "b64_json"
@@ -87,7 +101,7 @@ else
         REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
-  "prompt": "$PROMPT",
+  "prompt": "$ESCAPED_PROMPT",
   "n": 1,
   "size": "$SIZE",
   "quality": "$API_QUALITY",
@@ -101,7 +115,7 @@ EOF
         REQUEST_JSON=$(cat <<EOF
 {
   "model": "$MODEL",
-  "prompt": "$PROMPT",
+  "prompt": "$ESCAPED_PROMPT",
   "n": 1,
   "size": "$SIZE",
   "quality": "$API_QUALITY",
@@ -113,11 +127,23 @@ EOF
     fi
 fi
 
-# Make the API request
-RESPONSE=$(curl -s -X POST "https://api.openai.com/v1/images/generations" \
+# Make the API request (with timeouts to prevent hanging)
+RESPONSE=$(curl -s --connect-timeout 10 --max-time 120 -X POST "https://api.openai.com/v1/images/generations" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d "$REQUEST_JSON")
+
+# Check for curl errors
+CURL_EXIT=$?
+if [ $CURL_EXIT -ne 0 ]; then
+    case $CURL_EXIT in
+        28) echo "Error: Request timed out" ;;
+        6)  echo "Error: Could not resolve host" ;;
+        7)  echo "Error: Connection refused" ;;
+        *)  echo "Error: Network error (curl exit code: $CURL_EXIT)" ;;
+    esac
+    exit 1
+fi
 
 # Check for errors in response
 if echo "$RESPONSE" | grep -q '"error"'; then

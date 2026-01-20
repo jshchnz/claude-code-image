@@ -9,7 +9,7 @@ View recently generated images and their details.
 ## Usage
 
 ```
-/claude-code-image:history
+/image:history
 ```
 
 ## Instructions
@@ -21,7 +21,7 @@ When the user invokes this command, display the generation history:
 Read the history from `~/.claude-code-image/history.json`.
 
 If the file doesn't exist or is empty, display:
-"No generation history found. Generate your first image with `/claude-code-image:generate`!"
+"No generation history found. Generate your first image with `/image:generate`!"
 
 ### 2. Display History
 

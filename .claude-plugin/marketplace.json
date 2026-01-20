@@ -1,0 +1,18 @@
+{
+  "name": "claude-code-image",
+  "owner": {
+    "name": "jshchnz"
+  },
+  "metadata": {
+    "description": "AI image generation and editing plugin for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "image",
+      "source": "./",
+      "description": "Generate and edit images using GPT Image (OpenAI) or Google Gemini. Natural language prompts, auto-transparency, multiple models.",
+      "version": "1.0.0",
+      "keywords": ["image-generation", "image-editing", "openai", "gemini", "ai-art"]
+    }
+  ]
+}

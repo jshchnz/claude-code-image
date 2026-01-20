@@ -18,14 +18,14 @@ argument-hint: <prompt>
 - "Can you make a picture of..."
 - "Visualize what a futuristic car might look like"
 
-**Also triggered by:** `/claude-code-image:generate <prompt>`
+**Also triggered by:** `/image:generate <prompt>`
 
 ---
 
 ## Usage
 
 ```
-/claude-code-image:generate <prompt>
+/image:generate <prompt>
 ```
 
 ## Instructions
@@ -223,7 +223,7 @@ Wait for user confirmation before proceeding. If user declines, offer to change 
 **For Nanobanana:** Check if `GEMINI_API_KEY` environment variable is set.
 
 If the required API key is not set, inform the user:
-"API key not configured. Run `/claude-code-image:configure` to set up your API keys."
+"API key not configured. Run `/image:configure` to set up your API keys."
 
 ### 8. Generate the Image
 
@@ -310,12 +310,12 @@ Saved to: ~/Pictures/claude-code-image/nanobanana_flash_2026-01-17_143052.png
 
 **Basic generation:**
 ```
-/claude-code-image:generate a serene mountain landscape at sunset
+/image:generate a serene mountain landscape at sunset
 ```
 
 **Auto-transparency:**
 ```
-/claude-code-image:generate a cute cat sticker with sparkles
+/image:generate a cute cat sticker with sparkles
 ```
 (Automatically enables transparent background)
 

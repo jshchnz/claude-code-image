@@ -9,7 +9,7 @@ Check the current configuration status and API key availability.
 ## Usage
 
 ```
-/claude-code-image:status
+/image:status
 ```
 
 ## Instructions
@@ -89,9 +89,9 @@ Verify the output directory exists and count files in it.
 ---
 
 **Quick Actions:**
-- Run `/claude-code-image:configure` to update settings
-- Run `/claude-code-image:generate <prompt>` to create an image
-- Run `/claude-code-image:history` to view past generations"
+- Run `/image:configure` to update settings
+- Run `/image:generate <prompt>` to create an image
+- Run `/image:history` to view past generations"
 
 ### Status Icons
 
@@ -102,7 +102,7 @@ Use these indicators for status:
 ### Handle Missing Configuration
 
 If config file doesn't exist:
-"Configuration not found. Run `/claude-code-image:configure` to set up the plugin."
+"Configuration not found. Run `/image:configure` to set up the plugin."
 
 If only some settings are missing, show "Not set" for those fields.
 
@@ -147,6 +147,6 @@ If only some settings are missing, show "Not set" for those fields.
 ---
 
 **Quick Actions:**
-- Run `/claude-code-image:configure` to update settings
-- Run `/claude-code-image:generate <prompt>` to create an image
-- Run `/claude-code-image:history` to view past generations"
+- Run `/image:configure` to update settings
+- Run `/image:generate <prompt>` to create an image
+- Run `/image:history` to view past generations"

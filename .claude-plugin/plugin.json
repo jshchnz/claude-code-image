@@ -1,5 +1,5 @@
 {
-  "name": "claude-code-image",
+  "name": "image",
   "description": "Generate and edit images using GPT Image (OpenAI) or Nanobanana (Google Gemini)",
   "version": "1.0.0",
   "author": {

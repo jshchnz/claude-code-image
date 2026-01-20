@@ -11,6 +11,17 @@
 
 set -e
 
+# JSON escaping function to prevent injection
+# Uses jq if available, falls back to Python
+escape_json_string() {
+    local input="$1"
+    if command -v jq &>/dev/null; then
+        printf '%s' "$input" | jq -Rs '.[:-1]'
+    else
+        printf '%s' "$input" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read())[1:-1])"
+    fi
+}
+
 MODEL="$1"
 PROMPT="$2"
 ASPECT_RATIO="$3"
@@ -32,6 +43,9 @@ fi
 # Set defaults
 ASPECT_RATIO="${ASPECT_RATIO:-1:1}"
 
+# Escape prompt for safe JSON embedding
+ESCAPED_PROMPT=$(escape_json_string "$PROMPT")
+
 # Build the request JSON
 # Gemini uses generateContent endpoint with image generation config
 REQUEST_JSON=$(cat <<EOF
@@ -40,7 +54,7 @@ REQUEST_JSON=$(cat <<EOF
     {
       "parts": [
         {
-          "text": "$PROMPT"
+          "text": "$ESCAPED_PROMPT"
         }
       ]
     }
@@ -53,13 +67,25 @@ REQUEST_JSON=$(cat <<EOF
 EOF
 )
 
-# Make the API request
+# Make the API request (with timeouts to prevent hanging)
 API_URL="https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent"
 
-RESPONSE=$(curl -s -X POST "$API_URL" \
+RESPONSE=$(curl -s --connect-timeout 10 --max-time 120 -X POST "$API_URL" \
     -H "Content-Type: application/json" \
     -H "x-goog-api-key: $GEMINI_API_KEY" \
     -d "$REQUEST_JSON")
+
+# Check for curl errors
+CURL_EXIT=$?
+if [ $CURL_EXIT -ne 0 ]; then
+    case $CURL_EXIT in
+        28) echo "Error: Request timed out" ;;
+        6)  echo "Error: Could not resolve host" ;;
+        7)  echo "Error: Connection refused" ;;
+        *)  echo "Error: Network error (curl exit code: $CURL_EXIT)" ;;
+    esac
+    exit 1
+fi
 
 # Check for errors in response
 if echo "$RESPONSE" | grep -q '"error"'; then
