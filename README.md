@@ -1,6 +1,6 @@
 # claude-code-image
 
-Generate and edit images with AI using natural language. Just describe what you want!
+Generate and edit images using the latest models all within Claude Code.
 
 ## Install
 
