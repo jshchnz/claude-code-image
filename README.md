@@ -14,9 +14,6 @@ Generate and edit images with AI using natural language. Just describe what you 
 Then configure your API key:
 > "Set up image generation" or `/image:configure`
 
-Start creating:
-> "Generate an image of a mountain lake at dawn"
-
 ## Quick Start
 
 After installing, simply ask Claude to create images:
