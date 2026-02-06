@@ -2,6 +2,21 @@
 
 Generate and edit images with AI using natural language. Just describe what you want!
 
+## Install
+
+```
+/plugin marketplace add jshchnz/claude-code-image
+/plugin install image@claude-code-image
+```
+
+> Requires Claude Code v1.0.33+
+
+Then configure your API key:
+> "Set up image generation" or `/image:configure`
+
+Start creating:
+> "Generate an image of a mountain lake at dawn"
+
 ## Quick Start
 
 After installing, simply ask Claude to create images:
@@ -53,21 +68,6 @@ For explicit control, you can also use slash commands:
 | `/image:models` | View available AI models |
 | `/image:history` | See recent generations |
 | `/image:status` | Check configuration |
-
-## Install
-
-```
-/plugin marketplace add jshchnz/claude-code-image
-/plugin install image@claude-code-image
-```
-
-> Requires Claude Code v1.0.33+
-
-Then configure your API key:
-> "Set up image generation" or `/image:configure`
-
-Start creating:
-> "Generate an image of a mountain lake at dawn"
 
 ## Available Models
 
